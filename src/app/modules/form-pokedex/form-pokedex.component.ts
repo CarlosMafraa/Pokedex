@@ -1,25 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, EventEmitter, Output} from '@angular/core';
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-form-pokedex',
   templateUrl: './form-pokedex.component.html',
   styleUrl: './form-pokedex.component.css'
 })
-export class FormPokedexComponent implements OnInit{
-  public formGroup!: FormGroup;
+export class FormPokedexComponent{
+  @Output() onValueChange: EventEmitter<FormControl> = new EventEmitter<FormControl>();
 
-  constructor(
-    private formBuilder: FormBuilder,
-  ) {
-  }
-  ngOnInit() {
-    this.initFormGroup()
-  }
-  public initFormGroup(){
-    this.formGroup = this.formBuilder.group({
-      valor:['', Validators.required]
-    })
-  }
+  public form: FormControl = new FormControl<string>('');
 
+  public emitControl() {
+    this.onValueChange.emit(this.form);
+  }
 }

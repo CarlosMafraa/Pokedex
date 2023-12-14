@@ -7,6 +7,7 @@ import {FormPokedexComponent} from "./modules/form-pokedex/form-pokedex.componen
 import {ReactiveFormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {HttpClientModule} from "@angular/common/http";
+import {SpinnerComponent} from "./shared/spinner/spinner.component";
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import {HttpClientModule} from "@angular/common/http";
     CardPokedexComponent,
     ListagemPokedexComponent,
     FormPokedexComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,

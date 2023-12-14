@@ -16,7 +16,6 @@ export class ArmazemService {
   }
 
   public getAllPokemon(limit: number, offset: number): Observable<any>{
-    console.log(limit, offset)
     return this.http.get(`${this.url}/pokemon?limit=${limit}&offset=${offset}`);
   }
 }

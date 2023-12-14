@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ArmazemService} from "../../service/armazem.service";
+import {ArmazemService} from "../../service/armazem/armazem.service";
 import {PokemonList} from "../../shared/interface/pokemon-list";
 import {Pokemon} from "../../shared/interface/pokemon";
+import {FormControl} from "@angular/forms";
 @Component({
   selector: 'app-listagem-pokedex',
   templateUrl: './listagem-pokedex.component.html',
@@ -20,18 +21,19 @@ export class ListagemPokedexComponent implements OnInit{
 
   constructor(
     private armazem: ArmazemService,
-   ) { }
+  ) { }
 
   ngOnInit() {
+    console.log(this.value)
     this.searchPokemon(this.value);
-    console.log("Oii")
-
   }
 
   public getAllPokemons(value: number){
-    if(value !=0 || null){
+    this.searchResults = [];
+    if(value !== 0){
       this.inicial = this.limit * value;
     }
+    console.log(this.inicial, this.limit)
     this.pokemonsDetails = [];
     this.armazem.getAllPokemon(this.limit, this.inicial).subscribe({
       next: res => {
@@ -47,8 +49,7 @@ export class ListagemPokedexComponent implements OnInit{
     })
   }
   public searchPokemon(value: any) {
-    if (value != null) {
-      console.log(value)
+    if (value !== null && value !== '') {
       this.getByPokemons(value, true)
       console.log("Olaaaa")
     } else {
@@ -72,6 +73,7 @@ export class ListagemPokedexComponent implements OnInit{
         } else {
           this.pokemonsDetails.push(pokemonDetails);
         }
+        console.log(pokemonDetails)
         this.isLoading = false;
       }, error: error => {
         console.error('Deu ruim: ', error);
@@ -89,5 +91,10 @@ export class ListagemPokedexComponent implements OnInit{
   public nextPage() {
     this.currentPage++;
     this.getAllPokemons(this.currentPage);
+  }
+  public onTextChange(formControl: FormControl) {
+    console.log(formControl)
+    this.value = formControl.value;
+    this.searchPokemon(this.value);
   }
 }
