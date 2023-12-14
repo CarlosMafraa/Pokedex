@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ArmazemService} from "../../service/armazem.service";
-import {PokemonList} from "../../shared/pokemon-list";
-import {Pokemon} from "../../shared/pokemon";
+import {PokemonList} from "../../shared/interface/pokemon-list";
+import {Pokemon} from "../../shared/interface/pokemon";
 @Component({
   selector: 'app-listagem-pokedex',
   templateUrl: './listagem-pokedex.component.html',

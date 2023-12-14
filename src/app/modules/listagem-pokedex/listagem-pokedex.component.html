@@ -1,14 +1,19 @@
 <div *ngIf="searchResults.length > 0; else showAll">
-  <div *ngFor="let pokemon of searchResults" class="col-sm-6 col-md-4 col-lg-3 col-12">
-    <app-card-pokedex [pokemon]="pokemon"></app-card-pokedex>
+  <div class="row">
+    <div *ngFor="let pokemon of searchResults" class="d-flex center align-items-center col-sm-6 col-md-4 col-lg-3 col-12">
+      <app-card-pokedex [pokemon]="pokemon"></app-card-pokedex>
+    </div>
   </div>
 </div>
 
 <ng-template #showAll>
-  <div *ngFor="let pokemon of pokemonsDetails" class="col-sm-6 col-md-4 col-lg-3 col-12">
-    <app-card-pokedex [pokemon]="pokemon"></app-card-pokedex>
+  <div class="row">
+    <div *ngFor="let pokemon of pokemonsDetails" class="d-flex justify-content-center align-items-center col-sm-6 col-md-4 col-lg-3 col-12">
+      <app-card-pokedex [pokemon]="pokemon"></app-card-pokedex>
+    </div>
   </div>
 </ng-template>
+
 
 <div>
   <button (click)="previousPage()">Anterior</button>
