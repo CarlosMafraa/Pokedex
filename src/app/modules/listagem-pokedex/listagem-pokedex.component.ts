@@ -3,11 +3,12 @@ import {ArmazemService} from "../../service/armazem/armazem.service";
 import {PokemonList} from "../../shared/interface/pokemon-list";
 import {Pokemon} from "../../shared/interface/pokemon";
 import {FormControl} from "@angular/forms";
-import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
+import {abrirFechar} from "../../shared/animacao/animacao";
 @Component({
   selector: 'app-listagem-pokedex',
   templateUrl: './listagem-pokedex.component.html',
-  styleUrl: './listagem-pokedex.component.css'
+  styleUrl: './listagem-pokedex.component.css',
+  animations: [ abrirFechar ],
 })
 export class ListagemPokedexComponent implements OnInit, OnChanges{
   @Input() public currentPage!: number;
@@ -19,6 +20,8 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public pokemonsDetails: Array<Pokemon> = new Array<Pokemon>();
   public searchResults: Array<Pokemon> = new Array<Pokemon>();
   public value: any = null;
+  public pokemonSelecionado: any;
+  public estado = 'invisivel';
 
   constructor(
     private armazem: ArmazemService,
@@ -26,12 +29,9 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
 
   ngOnChanges() {
     this.searchPokemon(this.value);
-    console.log(this.isLoading)
-
   }
 
   ngOnInit() {
-    console.log(this.isLoading)
 
   }
 
@@ -70,14 +70,17 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     this.armazem.getByIdPokemon(value).subscribe({
       next: res => {
         this.isLoading = true;
-        console.log(this.isLoading)
-        console.log(res)
+      console.log(res)
         let pokemonDetails : Pokemon = {
           id: res.id,
           name: res.name,
           Arraytipo: res.types,
-          imageGif: res.sprites.front_default
-          // imageGif : res.sprites.versions['generation-v']['black-white'].animated['front_default'],
+          image: res.sprites.front_default,
+          imageGif : res.sprites.versions['generation-v']['black-white'].animated['front_default'],
+          categoria: res.species.name,
+          peso: res.weight,
+          altura: res.height,
+          habilidades: res.abilities
         };
         if (isSearch) {
           this.searchResults = [pokemonDetails];
@@ -103,5 +106,14 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  public detailsMetod(value: any) {
+    console.log(value, "O que eu quero");
+    if (this.pokemonSelecionado === value && this.estado === 'aberto') {
+      this.estado = 'fechado';
+    } else {
+      this.pokemonSelecionado = value;
+      this.estado = 'aberto';
+    }
+  }
 
 }

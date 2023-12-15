@@ -1,11 +1,10 @@
-<div class="card m-2">
+<div class="card m-2"  *ngIf="pokemon != undefined">
   <div class="card-img-top">
-    <img [src]="pokemon.imageGif" class="frente">
+    <img [src]="pokemon.image">
   </div>
-  <div *ngIf="pokemon != undefined" class="card-body">
+  <div class="card-body">
     <small>N°: {{pokemon.id}}</small>
     <p class="p-0">{{pokemon.name}}</p>
-
     <div class="d-flex">
       <div *ngFor="let tipagem of pokemon.Arraytipo">
         <div [ngClass]="'background-color-' + tipagem.type.name" class="rounded mx-2">

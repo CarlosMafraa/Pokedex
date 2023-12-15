@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-center align-content-center" *ngIf="pokemon !== undefined">
+  <div class="d-inline-flex">
+    <div class="card-img">
+      <img [src]="pokemon.imageGif">
+    </div>
+    <div class="m-3">
+      <small>N°: {{pokemon.id}}</small>
+      <p class="fs-3">{{pokemon.name}}</p>
+      <p>{{pokemon.categoria}} akjscxbkjzbdn</p>
+      <p>{{pokemon.peso / 10}} kg</p>
+      <p>{{pokemon.altura / 10}} m</p>
+
+      <div *ngFor="let tipagem of pokemon.Arraytipo" class="d-inline-flex">
+        <div [ngClass]="'background-color-' + tipagem.type.name" class="rounded mx-2">
+          <span class="py-1 px-2">{{tipagem.type.name}}</span>
+        </div>
+      </div>
+      <div *ngFor="let habilidade of pokemon.habilidades" class="d-inline-flex">
+        <span class="py-1 px-2">{{habilidade.ability.name}}</span>
+      </div>
+    </div>
+  </div>
+</div>
