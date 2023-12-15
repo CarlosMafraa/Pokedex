@@ -4,7 +4,12 @@
     <img src="assets/images/pokedex.png">
   </div>
   <div>
-    <app-listagem-pokedex></app-listagem-pokedex>
+    <app-listagem-pokedex [currentPage]="currentPage"></app-listagem-pokedex>
+  </div>
+
+  <div class="d-flex justify-content-center align-items-center my-5">
+    <button (click)="previousPage()" type="button" class="btn col-3 mx-3">Anterior</button>
+    <button (click)="nextPage()" type="button" class="btn col-3 mx-3">Próxima</button>
   </div>
 </div>
 </body>

@@ -1,4 +1,3 @@
-
 <div class="card m-2">
   <div class="card-img-top">
     <img [src]="pokemon.imageGif" class="frente">
@@ -10,7 +9,7 @@
     <div class="d-flex">
       <div *ngFor="let tipagem of pokemon.Arraytipo">
         <div [ngClass]="'background-color-' + tipagem.type.name" class="rounded mx-2">
-          <span class="p-1">{{tipagem.type.name}}</span></div>
+          <span class="py-1 px-2">{{tipagem.type.name}}</span></div>
       </div>
     </div>
   </div>

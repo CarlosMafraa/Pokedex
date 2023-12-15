@@ -11,7 +11,6 @@ export class ArmazemService {
   constructor(private http: HttpClient) { }
 
   public getByIdPokemon(value: any): Observable<any>{
-    console.log(value)
     return this.http.get(`${this.url}/pokemon/${value}`);
   }
 
