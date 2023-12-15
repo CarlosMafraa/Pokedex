@@ -77,7 +77,6 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
           Arraytipo: res.types,
           image: res.sprites.front_default,
           imageGif : res.sprites.versions['generation-v']['black-white'].animated['front_default'],
-          categoria: res.species.name,
           peso: res.weight,
           altura: res.height,
           habilidades: res.abilities

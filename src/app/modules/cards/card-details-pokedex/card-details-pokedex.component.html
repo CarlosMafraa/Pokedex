@@ -6,7 +6,6 @@
     <div class="m-3">
       <small>N°: {{pokemon.id}}</small>
       <p class="fs-3">{{pokemon.name}}</p>
-      <p>{{pokemon.categoria}} akjscxbkjzbdn</p>
       <p>{{pokemon.peso / 10}} kg</p>
       <p>{{pokemon.altura / 10}} m</p>
 
@@ -21,3 +20,9 @@
     </div>
   </div>
 </div>
+<div *ngIf="especie !== undefined">
+  <p>{{especie.categoria}}</p>
+  <p>{{especie.cor}}</p>
+  <p>{{especie.forma}}</p>
+  </div>
+
