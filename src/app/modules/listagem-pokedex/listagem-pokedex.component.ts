@@ -3,12 +3,13 @@ import {ArmazemService} from "../../service/armazem/armazem.service";
 import {PokemonList} from "../../shared/interface/pokemon-list";
 import {Pokemon} from "../../shared/interface/pokemon";
 import {FormControl} from "@angular/forms";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 @Component({
   selector: 'app-listagem-pokedex',
   templateUrl: './listagem-pokedex.component.html',
   styleUrl: './listagem-pokedex.component.css',
 })
-export class ListagemPokedexComponent implements OnInit, OnChanges{
+export class ListagemPokedexComponent implements OnChanges{
   @Input() public currentPage!: number;
 
   public pokemonsAll: Array<PokemonList> = new Array<PokemonList>()
@@ -30,10 +31,6 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     this.searchPokemon(this.value);
   }
 
-  ngOnInit() {
-
-  }
-
   public getAllPokemons(value: number){
     this.searchResults = [];
     if(value !== 0){
@@ -43,15 +40,14 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     }
     this.pokemonsDetails = [];
     this.changeLoading(true);
-    this.armazem.getAllPokemon(this.limit, this.inicial).then( res  =>
-      {
-        this.pokemonsAll = res.results;
-        this.pokemonsAll.forEach(async (yes)=>{
-          this.getByPokemons(yes.name);
-          this.changeLoading(false);
-        })
-      }).catch(() => {
+    this.armazem.getAllPokemon(this.limit, this.inicial).then( res=> {
+      this.pokemonsAll = res.results;
+      this.pokemonsAll.forEach(yes =>{
+        this.getByPokemons(yes.name);
         this.changeLoading(false);
+      })
+    }).catch(() => {
+      this.changeLoading(false);
     })
   }
   public searchPokemon(value: any) {
@@ -65,7 +61,7 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public getByPokemons(value: any, isSearch: boolean = false) {
     this.scrollTop();
     this.changeLoading(true);
-    this.armazem.getByIdPokemon(value).then(res => {
+    this.armazem.getByIdPokemon(value).then( res => {
         let pokemonDetails : Pokemon = {
           id: res.id,
           name: res.name,
@@ -82,8 +78,8 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
           this.pokemonsDetails.push(pokemonDetails);
         }
         this.changeLoading(false);
-      }).catch(() => {
-        this.changeLoading(false);
+      }).catch(()=>{
+      this.changeLoading(false);
     })
   }
 

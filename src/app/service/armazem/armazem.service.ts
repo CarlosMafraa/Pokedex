@@ -10,13 +10,13 @@ export class ArmazemService {
 
   constructor(private http: HttpClient) { }
 
-  public async getByIdPokemon(value: any): Promise<any>{
-    const api = this.http.get(`${this.url}/pokemon/${value}`);
+  public async getAllPokemon(limit: number, offset: number): Promise<any> {
+    const api =  this.http.get(`${this.url}/pokemon?limit=${limit}&offset=${offset}`);
     return lastValueFrom(api);
   }
 
-  public async getAllPokemon(limit: number, offset: number): Promise<any>{
-    const api = this.http.get(`${this.url}/pokemon?limit=${limit}&offset=${offset}`);
+  public async getByIdPokemon(value: any): Promise<any> {
+    const api = this.http.get(`${this.url}/pokemon/${value}`);
     return lastValueFrom(api);
   }
   public async getSpeciesPokemon(value: any): Promise<any>{
