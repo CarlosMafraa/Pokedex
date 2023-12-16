@@ -5,12 +5,9 @@ Este projeto é uma Pokedex desenvolvida com Angular, utilizando a API do site P
 
 ### ⚙️ Pré-requisitos
 
-Coloque aqui passo a passo que precisa para instalar o projeto e como instalá-lo.
-
 1. Npm v9.8.1
 2. Node v18.18.0
-3. Angular Angular Cli 17.0.7
-4. Boostrap 5.3.3
+
 
 ### 🔨 Guia de instalação
 
@@ -30,7 +27,7 @@ cd Pokedex
 ```
 npm install
 ```
-5. Execute a aplicação com Angular CLI: 
+5. Execute: 
 ```
 ng serve
 ```
@@ -43,7 +40,7 @@ ng serve
 * ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
 * ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 * ![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
-
+* ![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)
 ## 👷 Autores
 
 * [Carlos Mafra](https://github.com/CarlosMafraa)
