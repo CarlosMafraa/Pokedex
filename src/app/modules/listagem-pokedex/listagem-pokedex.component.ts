@@ -43,18 +43,16 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     }
     this.pokemonsDetails = [];
     this.changeLoading(true);
-    this.armazem.getAllPokemon(this.limit, this.inicial).subscribe({
-      next: res => {
+    this.armazem.getAllPokemon(this.limit, this.inicial).then( res  =>
+      {
+        console.log(res)
         this.pokemonsAll = res.results;
-        this.pokemonsAll.forEach(yes =>{
+        this.pokemonsAll.forEach(async (yes)=>{
           this.getByPokemons(yes.name);
           this.changeLoading(false);
         })
-      }
-      , error: error => {
-        console.error('Deu ruim: ', error);
+      }).catch(() => {
         this.changeLoading(false);
-      }
     })
   }
   public searchPokemon(value: any) {
@@ -68,8 +66,7 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public getByPokemons(value: any, isSearch: boolean = false) {
     this.scrollTop();
     this.changeLoading(true);
-    this.armazem.getByIdPokemon(value).subscribe({
-      next: res => {
+    this.armazem.getByIdPokemon(value).then(res => {
         let pokemonDetails : Pokemon = {
           id: res.id,
           name: res.name,
@@ -86,12 +83,8 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
           this.pokemonsDetails.push(pokemonDetails);
         }
         this.changeLoading(false);
-      },
-
-      error: error => {
-        console.error('Deu ruim: ', error);
+      }).catch(() => {
         this.changeLoading(false);
-      }
     })
   }
 
@@ -111,15 +104,11 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     this.scrollTop();
 
     if (this.pokemonSelecionadoAnterior === value) {
-      // Clique duplo no mesmo card, feche o card
       this.details = !this.details;
     } else {
-      // Clique em um card diferente, atualize o card
       this.details = true;
       this.pokemonSelecionado = value;
     }
-
-    // Atualize o card selecionado anteriormente
     this.pokemonSelecionadoAnterior = value;
   }
 

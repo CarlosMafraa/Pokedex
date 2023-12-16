@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {Pokemon, Specie} from "../../../shared/interface/pokemon";
 import {ArmazemService} from "../../../service/armazem/armazem.service";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-card-details-pokedex',
@@ -17,17 +18,13 @@ export class CardDetailsPokedexComponent implements OnChanges{
 
   ngOnChanges() {
     if(this.pokemon !== undefined){
-      this.armazem.getSpeciesPokemon(this.pokemon.name).subscribe({
-        next: res => {
-          console.log(res)
-          let pokemonSpecie: Specie = {
-            categoria: res['genera'][7]['genus'],
-            cor: res.color.name,
-            forma: res.shape.name
-          }
-          this.especie = pokemonSpecie;
-          console.log(this.especie)
+      this.armazem.getSpeciesPokemon(this.pokemon.name).then(res => {
+        let pokemonSpecie: Specie = {
+          categoria: res['genera'][7]['genus'],
+          cor: res.color.name,
+          forma: res.shape.name
         }
+        this.especie = pokemonSpecie;
       })
     }
   }

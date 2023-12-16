@@ -29,7 +29,7 @@ npm install
 ```
 5. Execute: 
 ```
-ng serve
+npm start
 ```
 
 ## 📦 Tecnologias usadas:

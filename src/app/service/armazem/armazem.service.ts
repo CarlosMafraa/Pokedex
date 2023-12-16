@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable} from "rxjs";
+import {lastValueFrom, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({
@@ -10,14 +10,17 @@ export class ArmazemService {
 
   constructor(private http: HttpClient) { }
 
-  public getByIdPokemon(value: any): Observable<any>{
-    return this.http.get(`${this.url}/pokemon/${value}`);
+  public async getByIdPokemon(value: any): Promise<any>{
+    const api = this.http.get(`${this.url}/pokemon/${value}`);
+    return lastValueFrom(api);
   }
 
-  public getAllPokemon(limit: number, offset: number): Observable<any>{
-    return this.http.get(`${this.url}/pokemon?limit=${limit}&offset=${offset}`);
+  public async getAllPokemon(limit: number, offset: number): Promise<any>{
+    const api = this.http.get(`${this.url}/pokemon?limit=${limit}&offset=${offset}`);
+    return lastValueFrom(api);
   }
-  public getSpeciesPokemon(value: any): Observable<any>{
-    return this.http.get(`${this.url}/pokemon-species/${value}`);
+  public async getSpeciesPokemon(value: any): Promise<any>{
+    const api = this.http.get(`${this.url}/pokemon-species/${value}`);
+    return lastValueFrom(api);
   }
 }
