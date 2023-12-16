@@ -45,7 +45,6 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     this.changeLoading(true);
     this.armazem.getAllPokemon(this.limit, this.inicial).then( res  =>
       {
-        console.log(res)
         this.pokemonsAll = res.results;
         this.pokemonsAll.forEach(async (yes)=>{
           this.getByPokemons(yes.name);
