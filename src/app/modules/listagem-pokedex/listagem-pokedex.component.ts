@@ -3,12 +3,10 @@ import {ArmazemService} from "../../service/armazem/armazem.service";
 import {PokemonList} from "../../shared/interface/pokemon-list";
 import {Pokemon} from "../../shared/interface/pokemon";
 import {FormControl} from "@angular/forms";
-import {abrirFechar} from "../../shared/animacao/animacao";
 @Component({
   selector: 'app-listagem-pokedex',
   templateUrl: './listagem-pokedex.component.html',
   styleUrl: './listagem-pokedex.component.css',
-  animations: [ abrirFechar ],
 })
 export class ListagemPokedexComponent implements OnInit, OnChanges{
   @Input() public currentPage!: number;
@@ -21,7 +19,8 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public searchResults: Array<Pokemon> = new Array<Pokemon>();
   public value: any = null;
   public pokemonSelecionado: any;
-  public estado = 'invisivel';
+  public details: boolean = false;
+  public pokemonSelecionadoAnterior = null;
 
   constructor(
     private armazem: ArmazemService,
@@ -36,7 +35,6 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   }
 
   public getAllPokemons(value: number){
-    this.changeLoading(true);
     this.searchResults = [];
     if(value !== 0){
       this.inicial = this.limit * value;
@@ -44,6 +42,7 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
       this.inicial = value;
     }
     this.pokemonsDetails = [];
+    this.changeLoading(true);
     this.armazem.getAllPokemon(this.limit, this.inicial).subscribe({
       next: res => {
         this.pokemonsAll = res.results;
@@ -51,8 +50,10 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
           this.getByPokemons(yes.name);
           this.changeLoading(false);
         })
-      }, error: error => {
+      }
+      , error: error => {
         console.error('Deu ruim: ', error);
+        this.changeLoading(false);
       }
     })
   }
@@ -69,8 +70,6 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
     this.changeLoading(true);
     this.armazem.getByIdPokemon(value).subscribe({
       next: res => {
-        this.isLoading = true;
-      console.log(res)
         let pokemonDetails : Pokemon = {
           id: res.id,
           name: res.name,
@@ -87,8 +86,11 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
           this.pokemonsDetails.push(pokemonDetails);
         }
         this.changeLoading(false);
-      }, error: error => {
+      },
+
+      error: error => {
         console.error('Deu ruim: ', error);
+        this.changeLoading(false);
       }
     })
   }
@@ -96,6 +98,7 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public onTextChange(formControl: FormControl) {
     this.value = formControl.value;
     this.searchPokemon(this.value);
+    this.details = false;
   }
   public changeLoading(event: boolean){
     this.isLoading = event;
@@ -104,15 +107,20 @@ export class ListagemPokedexComponent implements OnInit, OnChanges{
   public scrollTop(): void{
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-
   public detailsMetod(value: any) {
-    console.log(value, "O que eu quero");
-    if (this.pokemonSelecionado === value && this.estado === 'aberto') {
-      this.estado = 'fechado';
+    this.scrollTop();
+
+    if (this.pokemonSelecionadoAnterior === value) {
+      // Clique duplo no mesmo card, feche o card
+      this.details = !this.details;
     } else {
+      // Clique em um card diferente, atualize o card
+      this.details = true;
       this.pokemonSelecionado = value;
-      this.estado = 'aberto';
     }
+
+    // Atualize o card selecionado anteriormente
+    this.pokemonSelecionadoAnterior = value;
   }
 
 }

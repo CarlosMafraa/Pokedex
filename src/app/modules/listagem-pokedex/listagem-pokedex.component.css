@@ -1,3 +1,28 @@
+.abrir {
+  animation: abrir 1s forwards;
+}
 
+.fechar {
+  animation: fechar 1s forwards;
+}
 
+@keyframes abrir {
+  0% { max-height: 0; }
+  100% { max-height: 100vh; }
+}
 
+@keyframes fechar {
+  0% { max-height: 100vh; }
+  100% { max-height: 0; }
+}
+
+.spinner-em-cima {
+  z-index: 1000;
+  position: relative;
+  opacity: 0.5;
+}
+
+body{
+  background: #ffefd5;
+  /*background-image: url("/assets/images/bg_write.png");*/
+}

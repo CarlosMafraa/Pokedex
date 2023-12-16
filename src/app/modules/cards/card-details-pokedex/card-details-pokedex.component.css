@@ -13,6 +13,23 @@
   align-items: center;
 }
 
-span{
+.tab {
+  text-indent: 20px;
+}
+img{
+transform: scale(1.2);
+}
+
+.config{
+  padding: 0;
+  margin: 0;
+}
+
+small{
   font-size: 12px;
+  text-indent: 20px;
+}
+
+body{
+  background: rgb(217, 210, 210);
 }

@@ -1,28 +1,65 @@
-<div class="d-flex justify-content-center align-content-center" *ngIf="pokemon !== undefined">
-  <div class="d-inline-flex">
-    <div class="card-img">
-      <img [src]="pokemon.imageGif">
+<body class="rounded">
+<div class="d-flex flex-wrap justify-content-center align-content-center" *ngIf="pokemon !== undefined">
+  <div class="m-3">
+    <div >
+      <div class="card-img img-fluid">
+        <img [src]="pokemon.imageGif">
+      </div>
     </div>
+  </div>
+  <div class="d-flex">
     <div class="m-3">
-      <small>N°: {{pokemon.id}}</small>
-      <p class="fs-3">{{pokemon.name}}</p>
-      <p>{{pokemon.peso / 10}} kg</p>
-      <p>{{pokemon.altura / 10}} m</p>
-
-      <div *ngFor="let tipagem of pokemon.Arraytipo" class="d-inline-flex">
-        <div [ngClass]="'background-color-' + tipagem.type.name" class="rounded mx-2">
-          <span class="py-1 px-2">{{tipagem.type.name}}</span>
+      <div class="d-block">
+        <div>
+          <p class="mb-0">N°: {{pokemon.id}}</p>
+          <p class="config pb-1 pe-5 fs-3">{{pokemon.name}}</p>
+        </div>
+        <div>
+          <p class="config">Tipo</p>
+          <div *ngFor="let tipagem of pokemon.Arraytipo" class="d-inline-block mb-3">
+            <div [ngClass]="'background-color-' + tipagem.type.name" class="rounded mx-2">
+              <small class="tab px-2">{{tipagem.type.name}}</small>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex">
+            <div>
+              <p class="config">Peso:</p>
+              <p class="tab">{{pokemon.peso / 10}} kg</p>
+            </div>
+            <div>
+              <p class="config">Altura:</p>
+              <p class="tab">{{pokemon.altura / 10}} m</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div *ngFor="let habilidade of pokemon.habilidades" class="d-inline-flex">
-        <span class="py-1 px-2">{{habilidade.ability.name}}</span>
+    </div>
+    <div class="m-3">
+      <div class="d-block">
+        <p class="config pe-5">Habilidades</p>
+        <div *ngFor="let habilidade of pokemon.habilidades" class="d-inline-block">
+          <small class="tab ms-2">{{habilidade.ability.name}}</small>
+        </div>
+        <div *ngIf="especie !== undefined">
+          <p class="config mt-3">Categoria:</p>
+          <p class="tab mb-2">{{especie.categoria}}</p>
+          <div class="d-inline-flex  mt-3">
+            <div>
+              <p class="config ">Cor: </p>
+              <p class="tab">{{especie.cor}}</p>
+            </div>
+            <div>
+              <p class="config">Forma: </p>
+              <p class="tab">{{especie.forma}}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div *ngIf="especie !== undefined">
-  <p>{{especie.categoria}}</p>
-  <p>{{especie.cor}}</p>
-  <p>{{especie.forma}}</p>
-  </div>
+</body>
+
 

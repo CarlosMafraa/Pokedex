@@ -1,5 +1,10 @@
 .card{
   width: 182px;
+
+}
+
+.card-body{
+  background: rgb(217, 210, 210);
 }
 
 .card-img-top{
