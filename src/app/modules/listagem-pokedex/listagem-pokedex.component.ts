@@ -43,14 +43,13 @@ export class ListagemPokedexComponent implements OnChanges{
     try {
       const res = await this.armazem.getAllPokemon(this.limit, this.inicial);
       this.pokemonsAll = res.results;
-      for (const pokemon of this.pokemonsAll) {
-        await this.getByPokemons(pokemon.name);
-      }
+      await Promise.all(this.pokemonsAll.map(pokemon => this.getByPokemons(pokemon.name)));
       this.changeLoading(false);
     } catch (error) {
       this.changeLoading(false);
     }
   }
+
 
   public searchPokemon(value: any) {
     if (value !== null && value !== '') {
