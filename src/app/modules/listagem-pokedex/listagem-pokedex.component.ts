@@ -31,7 +31,7 @@ export class ListagemPokedexComponent implements OnChanges{
     this.searchPokemon(this.value);
   }
 
-  public getAllPokemons(value: number){
+  public async getAllPokemons(value: number){
     this.searchResults = [];
     if(value !== 0){
       this.inicial = this.limit * value;
@@ -40,16 +40,18 @@ export class ListagemPokedexComponent implements OnChanges{
     }
     this.pokemonsDetails = [];
     this.changeLoading(true);
-    this.armazem.getAllPokemon(this.limit, this.inicial).then( res=> {
+    try {
+      const res = await this.armazem.getAllPokemon(this.limit, this.inicial);
       this.pokemonsAll = res.results;
-      this.pokemonsAll.forEach(yes =>{
-        this.getByPokemons(yes.name);
-        this.changeLoading(false);
-      })
-    }).catch(() => {
+      for (const pokemon of this.pokemonsAll) {
+        await this.getByPokemons(pokemon.name);
+      }
       this.changeLoading(false);
-    })
+    } catch (error) {
+      this.changeLoading(false);
+    }
   }
+
   public searchPokemon(value: any) {
     if (value !== null && value !== '') {
       this.getByPokemons(value, true)
