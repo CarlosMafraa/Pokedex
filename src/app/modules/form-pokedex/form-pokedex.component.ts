@@ -11,7 +11,9 @@ export class FormPokedexComponent{
 
   public form: FormControl = new FormControl<string>('');
 
-  public emitControl() {
+  public emitControl(event: KeyboardEvent) {
+    if (event.key !== "Enter") {
     this.onValueChange.emit(this.form);
+    }
   }
 }

@@ -1,5 +1,5 @@
 <div>
-  <form>
-    <input [formControl]="form" class="form-control" placeholder="Pesquisar ..." (keyup)="emitControl()">
+  <form (keydown.enter)="$event.preventDefault()">
+    <input [formControl]="form" class="form-control" placeholder="Pesquisar ..." (keyup)="emitControl($event)">
   </form>
 </div>
