@@ -43,12 +43,23 @@ export class ListagemPokedexComponent implements OnChanges{
     try {
       const res = await this.armazem.getAllPokemon(this.limit, this.inicial);
       this.pokemonsAll = res.results;
-      await Promise.all(this.pokemonsAll.map(pokemon => this.getByPokemons(pokemon.name)));
+      const pokemonDetailsTemp: {[key: string]: Pokemon} = {};
+      const promises = this.pokemonsAll.map(pokemon =>
+        this.getByPokemons(pokemon.name).then(details => {
+          pokemonDetailsTemp[pokemon.name] = <Pokemon>details;
+        })
+      );
+      await Promise.all(promises);
+      this.pokemonsAll.forEach(pokemon => {
+        this.pokemonsDetails.push(pokemonDetailsTemp[pokemon.name]);
+      });
       this.changeLoading(false);
     } catch (error) {
       this.changeLoading(false);
     }
   }
+
+
 
 
   public searchPokemon(value: any) {
@@ -62,27 +73,27 @@ export class ListagemPokedexComponent implements OnChanges{
   public getByPokemons(value: any, isSearch: boolean = false) {
     this.scrollTop();
     this.changeLoading(true);
-    this.armazem.getByIdPokemon(value).then( res => {
-        let pokemonDetails : Pokemon = {
-          id: res.id,
-          name: res.name,
-          Arraytipo: res.types,
-          image: res.sprites.front_default,
-          imageGif : res.sprites.versions['generation-v']['black-white'].animated['front_default'],
-          peso: res.weight,
-          altura: res.height,
-          habilidades: res.abilities
-        };
-        if (isSearch) {
-          this.searchResults = [pokemonDetails];
-        } else {
-          this.pokemonsDetails.push(pokemonDetails);
-        }
-        this.changeLoading(false);
-      }).catch(()=>{
+    return this.armazem.getByIdPokemon(value).then( res => {
+      let pokemonDetails : Pokemon = {
+        id: res.id,
+        name: res.name,
+        Arraytipo: res.types,
+        image: res.sprites.front_default,
+        imageGif : res.sprites.versions['generation-v']['black-white'].animated['front_default'],
+        peso: res.weight,
+        altura: res.height,
+        habilidades: res.abilities
+      };
+      if (isSearch) {
+        this.searchResults = [pokemonDetails];
+      }
+      this.changeLoading(false);
+      return pokemonDetails;
+    }).catch(()=>{
       this.changeLoading(false);
     })
   }
+
 
   public onTextChange(formControl: FormControl) {
     this.value = formControl.value;
