@@ -1,8 +1,12 @@
-<div>
-  <div>
-
+<div class="flex flex-column card">
+  <div class="pokemon-background">
+      <img [src]="detailsPokemon.sprites.versions['generation-v']['black-white'].animated.front_default|| detailsPokemon.sprites.front_default"
+           [alt]="detailsPokemon.name || 'Pokémon'" >
+  </div>
+  <div class="pokemon-background">
+sadasdasdasd
   </div>
   <div>
-
+    <small>{{ pokemon().name}}</small>
   </div>
 </div>

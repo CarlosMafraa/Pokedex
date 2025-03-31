@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+*{
+  color: black;
+  font-family: 'Poppins', sans-serif;
+}
+
 .bug {
   background: -webkit-linear-gradient(180deg, #729f3f 50%, #729f3f 50%);
   background: -ms-linear-gradient(180deg, #729f3f 50%, #729f3f 50%);

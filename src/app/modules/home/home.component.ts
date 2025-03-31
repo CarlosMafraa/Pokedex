@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {CardComponent} from '../card/card.component';
+import {PokemonService} from '../../services/pokemon.service';
+import {PokemonListItem} from '../../shared/interface/pokemon-list-item';
+import {PokemonListResponse} from '../../shared/interface/pokemon-list-response';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +13,18 @@ import {CardComponent} from '../card/card.component';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-  public pokemons: any;
+export class HomeComponent implements OnInit{
+  public pokemons: PokemonListItem[] = [];
+  public service: PokemonService = inject(PokemonService)
+
+  ngOnInit() {
+    this.getAllPokemons();
+  }
+
+  public getAllPokemons(){
+    this.service.getAllPokemon(20,20).then((res: PokemonListResponse) => {
+      this.pokemons = res.results
+    })
+  }
 
 }
