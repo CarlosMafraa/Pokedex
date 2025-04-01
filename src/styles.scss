@@ -2,6 +2,10 @@
 *{
   color: black;
   font-family: 'Poppins', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
 }
 
 .bug {
@@ -182,4 +186,12 @@
   background: linear-gradient(180deg, #4592c4 50%, #4592c4 50%);
   background-color: #4592c4;
   color: #fff
+}
+
+.box-shadow{
+  box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+  border-radius: 10px;
+}
+.gray{
+  color: gray;
 }
