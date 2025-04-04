@@ -1,0 +1,35 @@
+.card {
+  height: 200px;
+  width: 150px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
+  border-radius: 10px;
+}
+
+.pokemon-background {
+  background-image: url('/assets/image/ambiente.png');
+  border-radius: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 120px;
+  width: 120px;
+  overflow: hidden;
+}
+
+
+.card img {
+  transition: opacity 0.3s ease;
+}
+
+.card:hover img {
+  scale: 1.2;
+}
+
+::ng-deep {
+  .smooth .p-dialog {
+    transition: height 0.3s ease;
+    height: auto;
+    overflow: hidden;
+  }
+
+}
