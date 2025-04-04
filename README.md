@@ -1,59 +1,63 @@
-# PokedexT
+# Pokedex
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.5.
+Este projeto é uma Pokédex desenvolvida com Angular, utilizando a API do site PokéAPI. A Pokédex é uma aplicação que permite aos usuários visualizar e pesquisar informações detalhadas sobre diferentes Pokémon.
 
-## Development server
+## ⚙️ Pré-requisitos
 
-To start a local development server, run:
+- **Npm**: v10.8.2 (ou compatível com Node v22.6.0)
+- **Node**: v22.6.0
 
-```bash
-ng serve
-```
+## 🔨 Guia de instalação
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Instale o Node.js:
 
-## Code scaffolding
+Baixe e instale o Node.js v22.6.0 a partir do site oficial.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Clone o repositório:
 
 ```bash
-ng generate --help
+git clone https://github.com/CarlosMafraa/pokedex.git
 ```
 
-## Building
-
-To build the project run:
+### Entre no diretório do projeto:
 
 ```bash
-ng build
+cd pokedex
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Instale as dependências do Node.js:
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Execute o projeto:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Isso inicia o servidor de desenvolvimento em `http://localhost:4200/`.
 
-## Additional Resources
+## 📦 Tecnologias usadas
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- HTML5
+- CSS3
+- **TypeScript**: v5.7.2
+- **NPM**: v10.8.2 (compatível com Node v22.6.0)
+- **Node.js**: v22.6.0
+- Bootstrap *(se aplicável, confirmar uso no projeto)*
+- **Angular**: v19.2.0
+- **PrimeNG**: v19.0.10
+- **PrimeFlex**: v4.0.0
+
+## 👷 Autor
+
+**Carlos Mafra**\
+📧 Email: [carlosfgmafra@gmail.com](mailto\:carlosfgmafra@gmail.com)\
+🔗 LinkedIn: [Meu LinkedIn](https://www.linkedin.com/in/seu-perfil) *(substitua pelo link real)*
+
+## 💡 Expressões de gratidão
+
+Um agradecimento público a todos que apoiaram este projeto. Para suporte, envie um email para [carlosfgmafra@gmail.com](mailto\:carlosfgmafra@gmail.com).
+
