@@ -4,6 +4,7 @@ import {lastValueFrom} from 'rxjs';
 import {PokemonListItem} from '../shared/interface/pokemon-list-item';
 import {PokemonListResponse} from '../shared/interface/pokemon-list-response';
 import {PokemonDetails} from '../shared/interface/pokemon-details';
+import {PokemonSpecies} from '../shared/interface/pokemon-species';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class PokemonService {
     return lastValueFrom(this.http.get<PokemonDetails>(`${this.url}/pokemon/${value}`))
   }
 
-  public async getSpeciesPokemon(value: string){
-    return lastValueFrom(this.http.get(`${this.url}/pokemon-species/${value}`))
+  public async getSpeciesPokemon(value: string): Promise<PokemonSpecies>{
+    return lastValueFrom(this.http.get<PokemonSpecies>(`${this.url}/pokemon-species/${value}`))
   }
 }
