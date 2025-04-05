@@ -21,8 +21,18 @@ import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
   styleUrl: './dialog.component.scss'
 })
 export class DialogComponent {
-  public pokemon: InputSignal<PokemonDetails> = input.required()
+  public pokemon: InputSignal<PokemonDetails | undefined> = input()
   public statColors: string[]= statColors
+
+  public getSpriteSrc(): string {
+    const p = this.pokemon();
+    if (!p || !p.sprites) return '';
+    return (
+      p.sprites.versions?.['generation-v']?.['black-white']?.animated?.front_default ||
+      p.sprites.front_default ||
+      ''
+    );
+  }
 
 }
 

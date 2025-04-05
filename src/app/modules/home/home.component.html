@@ -1,6 +1,6 @@
 <div class="flex flex-column h-full">
-  <div>
-
+  <div class="flex justify-content-center">
+<img ngSrc="../../../assets/image/pokedex.png" width="300" height="100" priority alt="Pokedex" class="pokedex">
   </div>
   <div class="flex justify-content-center">
     <div class="col-4 py-5">
@@ -11,14 +11,10 @@
     </div>
   </div>
   <div class="grid justify-content-center gap-4 h-full">
-    @if(isLoading()){
-      <app-loading></app-loading>
-    } @else {
-      @for (pokemon of pokemons; track pokemon) {
-        <div>
-          <app-card [pokemon]=pokemon></app-card>
-        </div>
-      }
+    @for (pokemon of pokemons(); track pokemon) {
+      <div>
+        <app-card [pokemon]=pokemon></app-card>
+      </div>
     }
   </div>
 </div>

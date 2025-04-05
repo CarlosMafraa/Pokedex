@@ -1,34 +1,41 @@
-@defer (when detailsPokemon){
-<div class="flex flex-column card cursor-pointer"
-     (click)="details()"
-     (mouseover)="showAnimatedSprite()"
-     (mouseout)="showStaticSprite()">
+@defer (when currentSprite()) {
+  <div class="card">
+    <div class="flex flex-column  cursor-pointer"
+         (click)="details()"
+         (mouseover)="showAnimatedSprite()"
+         (mouseout)="showStaticSprite()">
 
-    <div class="flex justify-content-end px-3 py-2">
-      <small class="font-bold">#{{ ('00' + detailsPokemon.id) | slice:-3 }}</small>
-    </div>
+      <div class="flex justify-content-end px-3 py-2">
+        <small class="font-bold">#{{ ('00' + detailsPokemon()?.id) | slice:-3 }}</small>
+      </div>
 
-  <div class="flex justify-content-center">
-    <div class="pokemon-background flex justify-content-center align-items-center">
-      <img
-        [src]="currentSprite"
-        [alt]="detailsPokemon.name || 'Pokémon'">
+      <div class="flex justify-content-center">
+        <div class="pokemon-background flex justify-content-center align-items-center">
+          <img
+            [src]="currentSprite()"
+            [alt]="detailsPokemon()?.name || 'Pokémon'">
+        </div>
+      </div>
+      <div class="flex justify-content-center py-2">
+        <small class="font-bold">{{ detailsPokemon()?.name | titlecase }}</small>
+      </div>
     </div>
   </div>
-  <div class="flex justify-content-center py-2">
-    <small class="font-bold">{{ detailsPokemon.name | titlecase }}</small>
+} @placeholder {
+  <div class="card">
+    <app-loading></app-loading>
   </div>
-</div>
+}
+
 
 <div>
   <p-dialog
-    [header]="(detailsPokemon.name | titlecase) + ' - #' + ('00' + detailsPokemon.id |  slice:-3)"
+    [header]="(detailsPokemon()?.name | titlecase) + ' - #' + ('00' + detailsPokemon()?.id |  slice:-3)"
     [(visible)]="visible"
     class="smooth"
     [style]="{ width: '25rem' }"
     [modal]="true"
     [draggable]="false">
-    <app-dialog [pokemon]="detailsPokemon"></app-dialog>
+    <app-dialog [pokemon]="detailsPokemon() || undefined"></app-dialog>
   </p-dialog>
 </div>
-}
