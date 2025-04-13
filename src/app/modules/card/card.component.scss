@@ -14,16 +14,18 @@
   height: 120px;
   width: 120px;
   overflow: hidden;
+  transition: background-image 0.3s ease;
 }
+
 
 
 .card img {
-  transition: opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.card:hover img {
-  scale: 1.2;
-}
+//.card:hover img {
+//  transform: scale(1);
+//}
 
 ::ng-deep {
   .smooth .p-dialog {
@@ -31,5 +33,5 @@
     height: auto;
     overflow: hidden;
   }
-
 }
+

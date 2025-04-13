@@ -2,10 +2,11 @@
   <div class="pokemon-background flex justify-content-center align-items-center mx-5">
     <img
       [src]="getSpriteSrc()"
-      [alt]="pokemon()?.name || 'Pokémon'">
+      [alt]="pokemon()?.name || 'Pokémon'"
+      loading="lazy">
   </div>
   <p-tabs value="0">
-    <p-tablist>
+    <p-tablist class="tabs">
       <p-tab value="0">Sobre</p-tab>
       <p-tab value="1">Tipo</p-tab>
       <p-tab value="2">Habilidades</p-tab>
@@ -34,9 +35,9 @@
         </div>
       </p-tabpanel>
       <p-tabpanel value="2">
-        <div class="flex justify-content-around my-3">
+        <div class="grid justify-content-around my-3">
           @for(habilidade of pokemon()?.abilities; track habilidade){
-            <div class="col-5 p-2 box-shadow flex justify-content-center">
+            <div class="col-5 m-2 box-shadow flex justify-content-center">
               <p class="p-0 m-0">{{ habilidade.ability.name | titlecase}}</p>
             </div>
           } @empty {

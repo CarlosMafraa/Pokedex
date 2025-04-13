@@ -45,5 +45,4 @@ export const statColors: string[] = [
   'purple',
   'gray',
   'pink',
-
 ];
