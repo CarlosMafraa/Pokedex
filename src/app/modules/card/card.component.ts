@@ -24,34 +24,35 @@ export class CardComponent implements OnInit {
   public service: PokemonService = inject(PokemonService)
   public detailsPokemon: WritableSignal<PokemonDetails | undefined> = signal<PokemonDetails | undefined>(undefined);
   public currentSprite: WritableSignal<string> = signal<string>("");
-  public visible: ModelSignal<boolean> = model(false)
+  public visible: ModelSignal<boolean> = model(false);
+  public spriteUrl: WritableSignal<string> = signal('')
 
   async ngOnInit() {
     try {
-      await this.getByName(this.pokemon().name);
-      this.currentSprite.set(this.detailsPokemon()?.sprites.front_default || '');
+      const res: PokemonDetails = await this.service.getByIdPokemon(this.pokemon().name);
+      this.detailsPokemon.set(res);
+
+      const initialSprite = res.sprites.front_default || '';
+      this.spriteUrl.set(initialSprite);
+      this.currentSprite.set(initialSprite);
     } catch (error) {
       console.error('Erro ao carregar Pokémon:', error);
     }
   }
 
-  public async getByName(value: string) {
-    const res: PokemonDetails = await this.service.getByIdPokemon(value);
-    this.detailsPokemon.set(res);
-  }
-
-  showAnimatedSprite() {
-    if (this.detailsPokemon()) {
-      const sprite = this.detailsPokemon()?.sprites.versions['generation-v']['black-white'].animated.front_default
-        || this.detailsPokemon()?.sprites.front_default
-        || '';
-      this.currentSprite.set(sprite);
+  public showAnimatedSprite() {
+    const details = this.detailsPokemon();
+    if (details) {
+      const animated = details.sprites.versions['generation-v']?.['black-white']?.animated?.front_default;
+      const fallback = details.sprites.front_default || '';
+      this.currentSprite.set(animated || fallback);
     }
   }
 
   showStaticSprite() {
-    if (this.detailsPokemon()) {
-      this.currentSprite.set(this.detailsPokemon()?.sprites.front_default || "");
+    const details = this.detailsPokemon();
+    if (details) {
+      this.currentSprite.set(details.sprites.front_default || '');
     }
   }
 
