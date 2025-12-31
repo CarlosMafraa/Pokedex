@@ -5,6 +5,7 @@ import {PokemonListItem} from '../shared/interface/pokemon-list-item';
 import {PokemonListResponse} from '../shared/interface/pokemon-list-response';
 import {PokemonDetails} from '../shared/interface/pokemon-details';
 import {PokemonSpecies} from '../shared/interface/pokemon-species';
+import {CacheService} from './cache.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +14,58 @@ export class PokemonService {
 
   public url : string = "https://pokeapi.co/api/v2";
   public http: HttpClient  = inject(HttpClient)
+  private cache: CacheService = inject(CacheService)
+
 
   public async getAllPokemon(limit: number, offset: number): Promise<PokemonListResponse>{
-    return lastValueFrom(this.http.get<PokemonListResponse>(`${this.url}/pokemon?limit=${limit}offset=${offset}`))
+    const cacheKey = `pokemon_list_${limit}_${offset}`;
+
+    const cachedData = this.cache.get<PokemonListResponse>(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const response = await lastValueFrom(
+      this.http.get<PokemonListResponse>(`${this.url}/pokemon?limit=${limit}&offset=${offset}`)
+    );
+
+    this.cache.set(cacheKey, response);
+    return response;
   }
 
   public async getByIdPokemon(value: string): Promise<PokemonDetails>{
-    return lastValueFrom(this.http.get<PokemonDetails>(`${this.url}/pokemon/${value}`))
+    const cacheKey = `pokemon_details_${value.toLowerCase()}`;
+
+    const cachedData = this.cache.get<PokemonDetails>(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const response = await lastValueFrom(
+      this.http.get<PokemonDetails>(`${this.url}/pokemon/${value}`)
+    );
+
+    this.cache.set(cacheKey, response);
+    return response;
   }
 
   public async getSpeciesPokemon(value: string): Promise<PokemonSpecies>{
-    return lastValueFrom(this.http.get<PokemonSpecies>(`${this.url}/pokemon-species/${value}`))
+    const cacheKey = `pokemon_species_${value.toLowerCase()}`;
+
+    const cachedData = this.cache.get<PokemonSpecies>(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const response = await lastValueFrom(
+      this.http.get<PokemonSpecies>(`${this.url}/pokemon-species/${value}`)
+    );
+
+    this.cache.set(cacheKey, response);
+    return response;
+  }
+
+  public clearCache(): void {
+    this.cache.clearAll();
   }
 }

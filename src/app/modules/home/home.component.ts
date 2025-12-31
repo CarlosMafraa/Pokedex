@@ -58,4 +58,9 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  public limparCache() {
+    this.service.clearCache();
+    this.getAllPokemons().then();
+  }
+
 }
