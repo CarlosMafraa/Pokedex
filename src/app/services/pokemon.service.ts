@@ -20,7 +20,7 @@ export class PokemonService {
   public async getAllPokemon(limit: number, offset: number): Promise<PokemonListResponse>{
     const cacheKey = `pokemon_list_${limit}_${offset}`;
 
-    const cachedData = this.cache.get<PokemonListResponse>(cacheKey);
+    const cachedData = await this.cache.get<PokemonListResponse>(cacheKey);
     if (cachedData) {
       return cachedData;
     }
@@ -29,14 +29,14 @@ export class PokemonService {
       this.http.get<PokemonListResponse>(`${this.url}/pokemon?limit=${limit}&offset=${offset}`)
     );
 
-    this.cache.set(cacheKey, response);
+    await this.cache.set(cacheKey, response);
     return response;
   }
 
   public async getByIdPokemon(value: string): Promise<PokemonDetails>{
     const cacheKey = `pokemon_details_${value.toLowerCase()}`;
 
-    const cachedData = this.cache.get<PokemonDetails>(cacheKey);
+    const cachedData = await this.cache.get<PokemonDetails>(cacheKey);
     if (cachedData) {
       return cachedData;
     }
@@ -45,14 +45,14 @@ export class PokemonService {
       this.http.get<PokemonDetails>(`${this.url}/pokemon/${value}`)
     );
 
-    this.cache.set(cacheKey, response);
+    await this.cache.set(cacheKey, response);
     return response;
   }
 
   public async getSpeciesPokemon(value: string): Promise<PokemonSpecies>{
     const cacheKey = `pokemon_species_${value.toLowerCase()}`;
 
-    const cachedData = this.cache.get<PokemonSpecies>(cacheKey);
+    const cachedData = await this.cache.get<PokemonSpecies>(cacheKey);
     if (cachedData) {
       return cachedData;
     }
@@ -61,7 +61,7 @@ export class PokemonService {
       this.http.get<PokemonSpecies>(`${this.url}/pokemon-species/${value}`)
     );
 
-    this.cache.set(cacheKey, response);
+    await this.cache.set(cacheKey, response);
     return response;
   }
 

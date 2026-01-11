@@ -1,155 +1,217 @@
 import { Injectable } from '@angular/core';
 
+interface CacheData<T> {
+  key: string;
+  data: T;
+  timestamp: number;
+  lastAccessed: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CacheService {
-  private readonly CACHE_PREFIX = 'pokedex_cache_';
+  private readonly DB_NAME = 'pokedex_cache_db';
+  private readonly STORE_NAME = 'cache_store';
+  private readonly DB_VERSION = 1;
   private readonly CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
-  private readonly MAX_CACHE_ITEMS = 50; // Limite máximo de itens no cache
-  private readonly CACHE_METADATA_KEY = 'pokedex_cache_metadata';
+  private readonly MAX_CACHE_ITEMS = 200; // Aumentado para 200 pois IndexedDB suporta muito mais
+  private db: IDBDatabase | null = null;
 
-  public set<T>(key: string, data: T): void {
+  constructor() {
+    this.initDB();
+  }
+
+  private async initDB(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+      request.onerror = () => {
+        console.error('Erro ao abrir IndexedDB:', request.error);
+        reject(request.error);
+      };
+
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve();
+      };
+
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+          const objectStore = db.createObjectStore(this.STORE_NAME, { keyPath: 'key' });
+          objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+          objectStore.createIndex('lastAccessed', 'lastAccessed', { unique: false });
+        }
+      };
+    });
+  }
+
+  private async ensureDB(): Promise<IDBDatabase> {
+    if (!this.db) {
+      await this.initDB();
+    }
+    if (!this.db) {
+      throw new Error('Database não inicializado');
+    }
+    return this.db;
+  }
+
+  public async set<T>(key: string, data: T): Promise<void> {
     try {
-      const cacheData = {
-        data: data,
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
+
+      const cacheData: CacheData<T> = {
+        key,
+        data,
         timestamp: Date.now(),
         lastAccessed: Date.now()
       };
 
-      const serializedData = JSON.stringify(cacheData);
-      const fullKey = this.CACHE_PREFIX + key;
+      await new Promise<void>((resolve, reject) => {
+        const request = store.put(cacheData);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
 
-      try {
-        localStorage.setItem(fullKey, serializedData);
-        this.updateMetadata(key);
-      } catch (quotaError) {
-        // Se exceder a quota, tenta liberar espaço
-        console.warn('Quota excedida, limpando cache antigo...');
-        this.clearOldestItems();
-
-        // Tenta novamente após limpar
-        try {
-          localStorage.setItem(fullKey, serializedData);
-          this.updateMetadata(key);
-        } catch (retryError) {
-          // Se ainda falhar, limpa todo o cache e tenta uma última vez
-          console.warn('Limpando todo o cache...');
-          this.clearAll();
-          localStorage.setItem(fullKey, serializedData);
-          this.updateMetadata(key);
-        }
-      }
+      // Limpa itens antigos se exceder o limite
+      await this.cleanupIfNeeded();
     } catch (error) {
       console.error('Erro ao salvar no cache:', error);
     }
   }
 
-  private updateMetadata(key: string): void {
+  public async get<T>(key: string): Promise<T | null> {
     try {
-      const metadata = this.getMetadata();
-      metadata[key] = Date.now();
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readonly');
+      const store = transaction.objectStore(this.STORE_NAME);
 
-      // Limita o número de itens
-      const keys = Object.keys(metadata);
-      if (keys.length > this.MAX_CACHE_ITEMS) {
-        // Remove os itens mais antigos
-        const sortedKeys = keys.sort((a, b) => metadata[a] - metadata[b]);
-        const keysToRemove = sortedKeys.slice(0, keys.length - this.MAX_CACHE_ITEMS);
-
-        keysToRemove.forEach(k => {
-          this.remove(k);
-          delete metadata[k];
-        });
-      }
-
-      localStorage.setItem(this.CACHE_METADATA_KEY, JSON.stringify(metadata));
-    } catch (error) {
-      console.error('Erro ao atualizar metadata:', error);
-    }
-  }
-
-  private getMetadata(): Record<string, number> {
-    try {
-      const metadata = localStorage.getItem(this.CACHE_METADATA_KEY);
-      return metadata ? JSON.parse(metadata) : {};
-    } catch {
-      return {};
-    }
-  }
-
-  private clearOldestItems(count: number = 10): void {
-    try {
-      const metadata = this.getMetadata();
-      const sortedKeys = Object.keys(metadata).sort((a, b) => metadata[a] - metadata[b]);
-      const keysToRemove = sortedKeys.slice(0, count);
-
-      keysToRemove.forEach(key => {
-        this.remove(key);
-        delete metadata[key];
+      const cacheData = await new Promise<CacheData<T> | undefined>((resolve, reject) => {
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
       });
 
-      localStorage.setItem(this.CACHE_METADATA_KEY, JSON.stringify(metadata));
-    } catch (error) {
-      console.error('Erro ao limpar itens antigos:', error);
-    }
-  }
-
-  public get<T>(key: string): T | null {
-    try {
-      const cached = localStorage.getItem(this.CACHE_PREFIX + key);
-      if (!cached) {
+      if (!cacheData) {
         return null;
       }
 
-      const cacheData = JSON.parse(cached);
       const now = Date.now();
-
       if (now - cacheData.timestamp > this.CACHE_EXPIRY) {
-        this.remove(key);
+        await this.remove(key);
         return null;
       }
 
-      // Atualiza o último acesso para o algoritmo LRU
-      this.updateMetadata(key);
+      // Atualiza o último acesso
+      await this.updateLastAccessed(key);
 
-      return cacheData.data as T;
+      return cacheData.data;
     } catch (error) {
       console.error('Erro ao recuperar do cache:', error);
       return null;
     }
   }
 
-  public remove(key: string): void {
+  private async updateLastAccessed(key: string): Promise<void> {
     try {
-      localStorage.removeItem(this.CACHE_PREFIX + key);
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
 
-      // Remove também dos metadados
-      const metadata = this.getMetadata();
-      delete metadata[key];
-      localStorage.setItem(this.CACHE_METADATA_KEY, JSON.stringify(metadata));
+      const cacheData = await new Promise<CacheData<any> | undefined>((resolve, reject) => {
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+
+      if (cacheData) {
+        cacheData.lastAccessed = Date.now();
+        store.put(cacheData);
+      }
     } catch (error) {
-      console.error('Erro ao remover do cache:', error);
+      console.error('Erro ao atualizar último acesso:', error);
     }
   }
 
-  public clearAll(): void {
+  private async cleanupIfNeeded(): Promise<void> {
     try {
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith(this.CACHE_PREFIX)) {
-          localStorage.removeItem(key);
-        }
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
+
+      const count = await new Promise<number>((resolve, reject) => {
+        const request = store.count();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
       });
 
-      // Limpa também os metadados
-      localStorage.removeItem(this.CACHE_METADATA_KEY);
+      if (count > this.MAX_CACHE_ITEMS) {
+        // Remove os itens menos acessados
+        const itemsToRemove = count - this.MAX_CACHE_ITEMS;
+        const index = store.index('lastAccessed');
+
+        const items: string[] = [];
+        await new Promise<void>((resolve, reject) => {
+          const request = index.openCursor();
+          request.onsuccess = (event) => {
+            const cursor = (event.target as IDBRequest).result;
+            if (cursor && items.length < itemsToRemove) {
+              items.push(cursor.value.key);
+              cursor.continue();
+            } else {
+              resolve();
+            }
+          };
+          request.onerror = () => reject(request.error);
+        });
+
+        for (const key of items) {
+          store.delete(key);
+        }
+      }
     } catch (error) {
       console.error('Erro ao limpar cache:', error);
     }
   }
 
-  public has(key: string): boolean {
-    return this.get(key) !== null;
+  public async remove(key: string): Promise<void> {
+    try {
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
+
+      await new Promise<void>((resolve, reject) => {
+        const request = store.delete(key);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    } catch (error) {
+      console.error('Erro ao remover do cache:', error);
+    }
+  }
+
+  public async clearAll(): Promise<void> {
+    try {
+      const db = await this.ensureDB();
+      const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+      const store = transaction.objectStore(this.STORE_NAME);
+
+      await new Promise<void>((resolve, reject) => {
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    } catch (error) {
+      console.error('Erro ao limpar cache:', error);
+    }
+  }
+
+  public async has(key: string): Promise<boolean> {
+    const data = await this.get(key);
+    return data !== null;
   }
 }
