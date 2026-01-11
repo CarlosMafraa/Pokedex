@@ -23,13 +23,21 @@ export class CardComponent implements OnInit {
   public pokemon: InputSignal<PokemonListItem> = input.required<PokemonListItem>()
   public service: PokemonService = inject(PokemonService)
   public detailsPokemon: WritableSignal<PokemonDetails | undefined> = signal<PokemonDetails | undefined>(undefined);
-  public currentSprite: WritableSignal<string> = signal<string>("");
+  public staticSprite: WritableSignal<string> = signal<string>("");
+  public animatedSprite: WritableSignal<string> = signal<string>("");
+  public showAnimated: WritableSignal<boolean> = signal<boolean>(false);
   public visible: ModelSignal<boolean> = model(false)
 
   async ngOnInit() {
     try {
       await this.getByName(this.pokemon().name);
-      this.currentSprite.set(this.detailsPokemon()?.sprites.front_default || '');
+      // Pré-carrega ambas as imagens
+      this.staticSprite.set(this.detailsPokemon()?.sprites.front_default || '');
+      this.animatedSprite.set(
+        this.detailsPokemon()?.sprites.versions['generation-v']['black-white'].animated.front_default
+        || this.detailsPokemon()?.sprites.front_default
+        || ''
+      );
     } catch (error) {
       console.error('Erro ao carregar Pokémon:', error);
     }
@@ -41,18 +49,11 @@ export class CardComponent implements OnInit {
   }
 
   showAnimatedSprite() {
-    if (this.detailsPokemon()) {
-      const sprite = this.detailsPokemon()?.sprites.versions['generation-v']['black-white'].animated.front_default
-        || this.detailsPokemon()?.sprites.front_default
-        || '';
-      this.currentSprite.set(sprite);
-    }
+    this.showAnimated.set(true);
   }
 
   showStaticSprite() {
-    if (this.detailsPokemon()) {
-      this.currentSprite.set(this.detailsPokemon()?.sprites.front_default || "");
-    }
+    this.showAnimated.set(false);
   }
 
   public details() {

@@ -17,7 +17,20 @@
   transition: background-image 0.3s ease;
 }
 
+.sprite-container {
+  position: relative;
+}
 
+.sprite-image {
+  position: absolute;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.sprite-image.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
 .card img {
   transition: transform 0.3s ease, opacity 0.3s ease;

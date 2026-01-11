@@ -1,4 +1,4 @@
-@defer (when currentSprite()) {
+@defer (when staticSprite()) {
   <div class="card cursor-pointer"
        (click)="details()"
        (mouseover)="showAnimatedSprite()"
@@ -8,10 +8,18 @@
         <small class="font-bold">#{{ ('00' + detailsPokemon()?.id) | slice:-3 }}</small>
       </div>
       <div class="flex justify-content-center">
-        <div class="pokemon-background flex justify-content-center align-items-center">
+        <div class="pokemon-background flex justify-content-center align-items-center sprite-container">
           <img
-            [src]="currentSprite()"
+            [src]="staticSprite()"
             [alt]="detailsPokemon()?.name || 'Pokémon'"
+            [class.hidden]="showAnimated()"
+            class="sprite-image"
+            loading="lazy">
+          <img
+            [src]="animatedSprite()"
+            [alt]="detailsPokemon()?.name || 'Pokémon'"
+            [class.hidden]="!showAnimated()"
+            class="sprite-image"
             loading="lazy">
         </div>
       </div>
