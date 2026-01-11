@@ -53,6 +53,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/Pokedex/",
               "budgets": [
                 {
                   "type": "initial",
